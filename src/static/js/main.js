@@ -1,44 +1,48 @@
-async function uploadImage() {
-    const fileInput = document.getElementById('image');
-    const file = fileInput.files[0];
-
-    if (!file) {
-        alert('Por favor, selecciona una imagen antes de subirla.');
-        return;
-    }
+document.getElementById('upload-form').addEventListener('submit', event => {
+    event.preventDefault();
 
     const formData = new FormData();
-    formData.append('image', file);
+    const fileInput = document.getElementById('image');
 
-    try {
-        const response = await fetch('/upload', {
-            method: 'POST',
-            body: formData
-        });
+    if (fileInput.files.length === 0) {
+        alert('No se cargó una imagen');
+        return; // Detener ejecución
+    }
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            alert(`Error: ${errorData.error}`);
-            return;
-        }
+    formData.append('image', fileInput.files[0]);
 
-        const responseData = await response.json();
-        if (result.images) {
-            document.getElementById('originalImage').src = result.images[0] + '?t=' + new Date().getTime(); // Cache busting
+    fetch('/upload', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
 
+            if (data.error) {
+                alert(`Error: ${data.error}`);
+                return;
+            }
+            // Mostrar imagen original
+            document.getElementById('originalImage').src = data.images[0] + '?t=' + new Date().getTime();
+
+            // Mostart la emocion
+            var emotion = document.getElementById('emotion-result');
+            emotion.textContent = data.emotion
+            
+            // Mostrar imágenes procesadas
             const processedImagesDiv = document.getElementById('processedImages');
-            processedImagesDiv.innerHTML = ''
+            processedImagesDiv.innerHTML = '';
 
-            result.images.slice(1).forEach(img => {
+            data.images.slice(1).forEach(img => {
                 const imgElement = document.createElement('img');
-                imgElement.src = img + '?t=' + new Date().getTime(); 
-                imgElement.style.maxWidth = '50%';
+                imgElement.src = img + '?t=' + new Date().getTime();
+                imgElement.style.width = '50%';
                 processedImagesDiv.appendChild(imgElement);
             });
-        }
-        alert(`Imagen subida exitosamente: ${responseData.filepath}`);
-    } catch (error) {
-        console.error('Error al subir la imagen:', error);
-        alert('Ocurrió un error al subir la imagen.');
-    }
-}
+
+            alert(`Imagen subida exitosamente: ${data.message}`);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+});
