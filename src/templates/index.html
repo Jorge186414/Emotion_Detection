@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargar Imagen</title>
+</head>
+<body>
+    <h1>Sube una imagen</h1>
+    <form id="upload-form" enctype="multipart/form-data">
+        <label for="image">Selecciona una imagen:</label>
+        <input type="file" id="image" name="image" accept="image/*" required>
+        <button type="submit">Subir</button>
+    </form>
+
+    <div class="original-image-section">
+        <h2>Imagen original</h2>
+        <div class="image-container">
+            <img id="originalImage" src="" alt="Imagen Original">
+        </div>
+    </div>
+
+    <div class="original-image-section">
+        <h2>Emocion Detectada</h2>
+        <div class="emotion-container">
+        <p id="emotion-result"></p>
+        </div>
+    </div>
+
+    <div class="processed-images-section">
+        <h2>Imágenes procesadas</h2>
+        <div id="processedImages" class="image-gallery"></div>
+    </div>
+
+    <script src="static/js/main.js"></script>
+</body>
+</html>
