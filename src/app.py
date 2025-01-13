@@ -54,7 +54,7 @@ def upload_images():
         with open(processed_image_path, "wb") as f:
             f.write(img_data)
         
-        processed_images.append(f"/static/images/processed_images/{processed_image_name}")
+        processed_images.append(f"./static/images/processed_images/{processed_image_name}")
 
     return jsonify({"message": "Imágenes procesadas correctamente", "images": processed_images, "emotion": result["emotion"]})
 
