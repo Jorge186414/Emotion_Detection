@@ -1,7 +1,7 @@
-from flask import Flask, request, jsonify, send_from_directory, render_template
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import os
-import cv2
+from auxiliarFunctions import process_image
 
 app = Flask(__name__)
 # Permitir todas las solicitudes CORS
@@ -19,6 +19,8 @@ if not os.path.exists(upload_images_front):
 if not os.path.exists(processed_images):
     os.makedirs(processed_images)
 
+app.config['PROCESSED_IMAGES_FOLDER'] = processed_images
+
 # EndPoint para renderizar nuestro Frontend
 @app.route('/')
 def index():
@@ -31,15 +33,30 @@ def upload_images():
     if 'image' not in request.files:
         return jsonify({"error": "No se encontró el archivo en la solicitud"}), 400
 
-    file = request.files['image']
+    original_image = request.files['image']
 
-    if file.filename == '':
+    if original_image.filename == '':
         return jsonify({"error": "El archivo no tiene nombre"}), 400
 
     # Guardamos la imagen en la carpeta predefinida
-    filepath = os.path.join(upload_images_front, file.filename)
-    file.save(filepath)
+    filepath = os.path.join(upload_images_front, original_image.filename)
+    original_image.save(filepath)
 
-    return jsonify({"message": "Archivo guardado exitosamente", "filepath": filepath}), 200
+    result = process_image(filepath)
+    # Guardar las imágenes procesadas (sobrescribir siempre las mismas 4)
+    processed_images = []
+    for idx, img_data in enumerate(result["images"]):
+        processed_image_name = f"processed_image_{idx}.jpg"
+        processed_image_path = os.path.join(app.config['PROCESSED_IMAGES_FOLDER'], processed_image_name)
+        
+        # Sobrescribir el archivo procesado
+        with open(processed_image_path, "wb") as f:
+            f.write(img_data)
+        
+        processed_images.append(f"./static/images/processed_images/{processed_image_name}")
+
+    return jsonify({"message": "Imágenes procesadas correctamente", "images": processed_images, "emotion": result["emotion"]})
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
