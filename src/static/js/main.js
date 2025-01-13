@@ -28,7 +28,7 @@ document.getElementById('upload-form').addEventListener('submit', event => {
             // Mostart la emocion
             var emotion = document.getElementById('emotion-result');
             emotion.textContent = data.emotion
-            
+
             // Mostrar imágenes procesadas
             const processedImagesDiv = document.getElementById('processedImages');
             processedImagesDiv.innerHTML = '';
@@ -40,7 +40,6 @@ document.getElementById('upload-form').addEventListener('submit', event => {
                 processedImagesDiv.appendChild(imgElement);
             });
 
-            alert(`Imagen subida exitosamente: ${data.message}`);
         })
         .catch(error => {
             console.error('Error:', error);
