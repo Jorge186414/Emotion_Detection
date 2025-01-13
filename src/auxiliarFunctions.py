@@ -93,7 +93,7 @@ def adjust_brightness(image, factor):
     return cv2.cvtColor(np.array(bright_image), cv2.COLOR_RGB2BGR)
 
 def image_to_bytes(image):
-    is_success, img_encoded = cv2.imencode('.jpg', image)  
+    is_success, img_encoded = cv2.imencode('.jpg', image)
     if is_success:
         return img_encoded.tobytes() 
     else:

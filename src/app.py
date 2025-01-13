@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, send_from_directory, render_template
 from flask_cors import CORS
 import os
 from auxiliarFunctions import process_image
@@ -43,6 +43,7 @@ def upload_images():
     original_image.save(filepath)
 
     result = process_image(filepath)
+
     # Guardar las imágenes procesadas (sobrescribir siempre las mismas 4)
     processed_images = []
     for idx, img_data in enumerate(result["images"]):
@@ -53,7 +54,7 @@ def upload_images():
         with open(processed_image_path, "wb") as f:
             f.write(img_data)
         
-        processed_images.append(f"./static/images/processed_images/{processed_image_name}")
+        processed_images.append(f"/static/images/processed_images/{processed_image_name}")
 
     return jsonify({"message": "Imágenes procesadas correctamente", "images": processed_images, "emotion": result["emotion"]})
 
