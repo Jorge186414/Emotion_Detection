@@ -35,16 +35,14 @@ def process_image(image_path):
 
     # Detectar la emoción de la imagen
     emotion = detect_emotion(image)
-    # Verificar si se obtiene la emocion
-    print(emotion)
     
     # Guardamos las imágenes generadas en un buffer de memoria y devolverlas como bytes
-    processed_images = []
+    processed_images = [] 
     for idx, img in enumerate(images):
         img_byte_arr = image_to_bytes(img)
         processed_images.append(img_byte_arr)
     
-    return {"message": "Imagen procesada", "images": processed_images}
+    return {"message": "Imagen procesada", "images": processed_images, "emotion": emotion}
 
 def detect_emotion(image):
     analysis = DeepFace.analyze(image, actions=['emotion'], enforce_detection=False)
