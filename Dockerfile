@@ -1,5 +1,5 @@
 # Usamos una imagen de Python para el contenedor
-FROM python:3.10-slim
+FROM python:3.10.16
 
 # Establecemos nuestro directorio de trabajo
 WORKDIR /app/src
